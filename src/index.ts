@@ -42,6 +42,61 @@ const app = new Elysia()
     message: `Received query - Name: ${name}, Age: ${age !== undefined ? age : "not provided"}`
   }
 })
+.post("/customers/create", ({ body } :
+{
+  body: {
+    name: string,
+    age?: number
+  }
+}) => {
+  const newCustomer = {
+    id: Date.now(),
+    name: body.name,
+    age: body.age
+  };
+  return {
+    message: "Customer created successfully",
+    customer: newCustomer
+  };
+})
+.put("/customers/update/:id", ({ params, body } : {
+  params: { 
+    id: number
+  },
+  body: {
+    name?: string,//หมายถึงว่าอาจจะไม่มีชื่อก็ได้
+    age?: number //หมายถึงว่าอาจจะไม่มีอายุก็ได้
+  }
+}) => {
+  const name = body.name;
+  const age = body.age;
+  return {
+    message: `Customer with ID ${params.id} updated successfully`,
+    updatedFields: {
+      name: name !== undefined ? name : "No change",
+      age: age !== undefined ? age : "No change"
+    }
+  };
+})
+.delete("/customers/delete/:id", ({ params } : {
+  params: {
+    id: number
+  }
+}) => {
+  return {
+    message: `Customer with ID ${params.id} deleted successfully`
+  };
+})
+.get("/customers", () => {
+  const customers = [
+      { id: 1, name: "John Doe" },
+      { id: 2, name: "Jane Smith" },
+      { id: 3, name: "Alice Johnson" }
+  ];
+  return {
+    customers
+  };
+})
 .listen(3000);
 
 
